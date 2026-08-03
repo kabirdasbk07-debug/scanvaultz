@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScanVaultz — Scan &amp; Convert</title>
+<style>
+  :root {
+    --ink: #0b0f17;
+    --ink-soft: #131a27;
+    --paper: #f4f6f9;
+    --line: rgba(244,246,249,0.12);
+    --accent: #38bdf8;
+    --accent-soft: rgba(56,189,248,0.14);
+    --muted: #93a0b4;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --mono: "SF Mono", "Menlo", ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* ---- Nav ---- */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+    background: rgba(11,15,23,0.85);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 16px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--paper);
+  }
+  .brand-mark {
+    width: 26px; height: 26px;
+    border-radius: 7px;
+    background: linear-gradient(135deg, #4338ca, #38bdf8);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .brand-mark svg { width: 14px; height: 14px; }
+  .nav-links { display: flex; gap: 22px; font-size: 14px; }
+  .nav-links a { color: var(--muted); }
+
+  /* ---- Hero ---- */
+  header.hero {
+    padding: 88px 0 64px;
+    border-bottom: 1px solid var(--line);
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 18px;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-size: 46px;
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    margin: 0 0 20px;
+    max-width: 11ch;
+  }
+  .lede {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 46ch;
+    margin: 0 0 32px;
+  }
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--accent); color: #06131d; }
+  .btn-primary:hover { background: #5cc8fa; text-decoration: none; }
+  .btn-ghost { border: 1px solid var(--line); color: var(--paper); }
+  .btn-ghost:hover { border-color: var(--accent); text-decoration: none; }
+
+  /* ---- Feature strip ---- */
+  .strip {
+    padding: 56px 0;
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  .strip-item .label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .strip-item p { margin: 0; font-size: 14.5px; color: var(--muted); }
+
+  /* ---- Sections ---- */
+  section {
+    padding: 72px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  section:last-of-type { border-bottom: none; }
+  section h2 {
+    font-family: var(--serif);
+    font-size: 30px;
+    letter-spacing: -0.01em;
+    margin: 0 0 8px;
+  }
+  .section-sub {
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0 0 36px;
+  }
+
+  .card {
+    background: var(--ink-soft);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px 26px;
+    margin-bottom: 16px;
+  }
+  .card h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .card p, .card li { color: var(--muted); font-size: 14.5px; margin: 0; }
+  .card ul { margin: 8px 0 0; padding-left: 18px; }
+  .card li + li { margin-top: 6px; }
+
+  .contact-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .contact-row .btn { flex-shrink: 0; }
+
+  dl.faq dt {
+    font-weight: 600;
+    color: var(--paper);
+    margin-top: 22px;
+    font-size: 15px;
+  }
+  dl.faq dt:first-child { margin-top: 0; }
+  dl.faq dd {
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: 14.5px;
+  }
+
+  .meta {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  footer {
+    padding: 40px 0 60px;
+    color: var(--muted);
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  footer a { color: var(--muted); }
+
+  @media (max-width: 640px) {
+    h1 { font-size: 34px; max-width: none; }
+    .strip { grid-template-columns: 1fr; gap: 22px; }
+    header.hero { padding: 64px 0 48px; }
+    section { padding: 52px 0; }
+    .nav-links { gap: 14px; font-size: 13px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 3h9l4 4v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" fill="#fff" fill-opacity="0.95"/>
+          <path d="M15 3v4h4" fill="#c7d2fe"/>
+        </svg>
+      </span>
+      ScanVaultz
+    </div>
+    <div class="nav-links">
+      <a href="#support">Support</a>
+      <a href="#privacy">Privacy</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero wrap">
+  <p class="eyebrow">On-device document scanner</p>
+  <h1>Every scan stays exactly where you took it.</h1>
+  <p class="lede">
+    ScanVaultz turns your camera into a fast, private document scanner. Every page is
+    captured, cropped, and saved on your iPhone only — nothing uploads, nothing syncs,
+    no account required.
+  </p>
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="#support">Get support</a>
+    <a class="btn btn-ghost" href="#privacy">Read the privacy policy</a>
+  </div>
+</header>
+
+<div class="strip wrap">
+  <div class="strip-item">
+    <div class="label">Capture</div>
+    <p>Automatic edge detection and perspective correction while you shoot, multi-page in one session.</p>
+  </div>
+  <div class="strip-item">
+    <div class="label">Search</div>
+    <p>On-device text recognition makes every PDF searchable in Files and Spotlight.</p>
+  </div>
+  <div class="strip-item">
+    <div class="label">Own it</div>
+    <p>One-time purchase unlocks everything. No subscription, ever.</p>
+  </div>
+</div>
+
+<section id="support" class="wrap">
+  <h2>Support</h2>
+  <p class="section-sub">Questions, bugs, or feature requests — here's how to reach us and what to check first.</p>
+
+  <div class="card contact-row">
+    <div>
+      <h3>Contact</h3>
+      <p>Email us and we'll reply within 1–2 business days.</p>
+    </div>
+    <a class="btn btn-primary" href="mailto:support@scanvaultz.app">support@scanvaultz.app</a>
+  </div>
+
+  <dl class="faq">
+    <dt>My scan isn't detecting the edges of my document.</dt>
+    <dd>Use a flat, well-lit surface with contrast between the document and the background — a dark table under a light page works best. Hold the phone steady until the outline turns solid.</dd>
+
+    <dt>Where are my scanned PDFs stored?</dt>
+    <dd>Locally on your device only, inside ScanVaultz's app storage. They are not uploaded anywhere. You can export or share any scan directly from the document view.</dd>
+
+    <dt>I purchased Pro but it's not unlocked.</dt>
+    <dd>Open ScanVaultz, go to the paywall screen, and tap "Restore Purchases." This re-checks your Apple ID's purchase history and re-applies your unlock without charging you again.</dd>
+
+    <dt>Can I recover a deleted scan?</dt>
+    <dd>Deleting a scan removes its file from your device immediately and can't be undone from within the app. If you have iCloud or Finder backups enabled for your device, a prior backup may still contain it.</dd>
+
+    <dt>Does ScanVaultz work without an internet connection?</dt>
+    <dd>Yes — scanning, text recognition, and PDF creation all run entirely on-device and work fully offline.</dd>
+  </dl>
+</section>
+
+<section id="privacy" class="wrap">
+  <h2>Privacy Policy</h2>
+  <p class="section-sub meta">Last updated: August 2026</p>
+
+  <div class="card">
+    <h3>What we collect</h3>
+    <p>Nothing. ScanVaultz does not require an account or sign-in, and does not transmit your
+    scans, photos, or documents to any server. Scanning, text recognition, and PDF creation
+    all happen locally on your iPhone using Apple's on-device frameworks.</p>
+  </div>
+
+  <div class="card">
+    <h3>Storage</h3>
+    <p>Your scanned documents are stored only in ScanVaultz's local app storage. They are not
+    backed up to any service we operate, and we have no access to them. Your device's own
+    iCloud or Finder backup settings — controlled by you in iOS Settings — may include app
+    data as part of your regular device backup; ScanVaultz does not separately upload
+    anything on its own.</p>
+  </div>
+
+  <div class="card">
+    <h3>In-app purchases</h3>
+    <p>Purchases are processed entirely by Apple through StoreKit. We do not collect, see, or
+    store your payment information — that's handled directly between you and Apple under
+    Apple's own privacy practices.</p>
+  </div>
+
+  <div class="card">
+    <h3>Analytics and tracking</h3>
+    <p>ScanVaultz does not include third-party analytics, advertising, or tracking SDKs. If
+    that changes in a future update, this page and the app's App Store privacy labels will
+    be updated to reflect exactly what's added.</p>
+  </div>
+
+  <div class="card">
+    <h3>Children's privacy</h3>
+    <p>ScanVaultz does not knowingly collect information from anyone, including children,
+    because it does not collect information at all.</p>
+  </div>
+
+  <div class="card">
+    <h3>Changes to this policy</h3>
+    <p>If this policy changes — for example, if a future update adds an optional backup
+    feature — we'll update this page and the in-app privacy disclosures to match.</p>
+  </div>
+
+  <div class="card">
+    <h3>Contact</h3>
+    <p>Questions about this policy: <a href="mailto:support@scanvaultz.app">support@scanvaultz.app</a></p>
+  </div>
+</section>
+
+<footer class="wrap">
+  <span>© 2026 ScanVaultz</span>
+  <span><a href="#support">Support</a> · <a href="#privacy">Privacy</a></span>
+</footer>
+
+</body>
+</html>
