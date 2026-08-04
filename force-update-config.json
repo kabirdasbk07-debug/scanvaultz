@@ -1,5 +1,5 @@
 {
-  "forceUpdate": false,
+  "forceUpdate": true,
   "minimumVersion": "1.0.1",
   "message": "A new version of OfflinePDFScanner is available. Please update to keep scanning.",
   "appStoreURL": "https://apps.apple.com/app/idYOUR_APP_ID"
